@@ -236,7 +236,7 @@ else
 fi
 
 # Source ROS configurations for bash on this user account
-source /opt/ros/indigo/setup.bash
+source /opt/ros/kinetic/setup.bash
 if !(cat $BASHRC_FILE | grep --quiet "source /opt/ros"); then
 	echo "" >> $BASHRC_FILE
 	echo "# Sets up the shell environment for ROS" >> $BASHRC_FILE
@@ -389,6 +389,20 @@ ros_git_get https://github.com/uf-mil/rawgps-tools.git
 ros_git_get https://github.com/uf-mil/hardware-common.git
 
 
+# Compatable version of Google's protobuf for Gazebo's 2.6 protoc msgs
+instlog "Installing older version of Google's protobuf"
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+tar -xvzf protobuf-2.6.1.tar.gz
+cd protobuf-2.6.1
+./configure
+make
+make check
+sudo make install
+cd ..
+rm -r protobuf-2.6.1
+rm -r protobuf-2.6.1.tar.gz
+
+
 #===================================#
 # Navigator Dependency Installation #
 #===================================#
@@ -454,8 +468,10 @@ if ($INSTALL_SUB); then
 	# Libraries needed by the hydrophone board
 	sudo pip install -q -U crc16
 
-	ros_git_get https://github.com/ros-drivers/camera1394
 	ros_git_get https://github.com/ros-drivers/driver_common
+	ros_git_get https://github.com/RustyBamboo/camera1394
+
+	#Need to hide sub8_perception and sub8_trajectory_generation
 
 fi
 
